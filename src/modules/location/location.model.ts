@@ -8,6 +8,7 @@ const locationSchema = new Schema<ILocation>(
     name: {
       type: String,
       required: true,
+      unique: true,
     },
     cars: [
       {

@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import { ICar } from "./cars.interface";
 
-const carsSchema = new Schema<ICar>(
+export const carsSchema = new Schema<ICar>(
   {
     title: {
       type: String,
