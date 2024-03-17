@@ -1,11 +1,9 @@
-import { Model } from "mongoose";
-
+import { Model, ObjectId } from "mongoose";
+import { ICar } from "../cars/cars.interface";
 
 export interface ILocation {
   name: string;
-  cars: any[];
+  cars: ICar[] | ObjectId[];
 }
 
 export type LocationModel = Model<ILocation, object>;
-
-

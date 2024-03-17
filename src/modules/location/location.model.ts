@@ -9,7 +9,12 @@ const locationSchema = new Schema<ILocation>(
       type: String,
       required: true,
     },
-    
+    cars: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "cars",
+      },
+    ],
   },
   {
     timestamps: true,

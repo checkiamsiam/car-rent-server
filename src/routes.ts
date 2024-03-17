@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import authRoutes from "./modules/auth/auth.route";
 import locationRoutes from "./modules/location/location.route";
+import carsRoutes from "./modules/cars/cars.route";
 
 const router: Router = express.Router();
 
@@ -12,6 +13,10 @@ const routes: { path: string; route: Router }[] = [
   {
     path: "/location",
     route: locationRoutes,
+  },
+  {
+    path: "/cars",
+    route: carsRoutes,
   },
 ];
 

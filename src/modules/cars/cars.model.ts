@@ -1,15 +1,56 @@
-import httpStatus from "http-status";
 import { Schema, model } from "mongoose";
-import AppError from "../../utils/customError.util";
-import { ILocation } from "./location.interface";
+import { ICar } from "./cars.interface";
 
-const locationSchema = new Schema<ILocation>(
+const carsSchema = new Schema<ICar>(
   {
-    name: {
+    title: {
       type: String,
       required: true,
     },
-    
+    description: {
+      type: String,
+    },
+    rentPerDay: {
+      type: Number,
+      required: true,
+    },
+    imageUrl: {
+      type: String,
+      required: true,
+    },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
+    seats: {
+      type: Number,
+      required: true,
+    },
+    bags: {
+      type: Number,
+      required: true,
+    },
+    dors: {
+      type: Number,
+      required: true,
+    },
+    ac: {
+      type: Boolean,
+      required: true,
+    },
+    automatic: {
+      type: Boolean,
+      required: true,
+    },
+    fuel: {
+      type: String,
+      enum: ["petrol", "diesel", "cng", "electric"],
+      required: true,
+    },
+    location: {
+      type: Schema.Types.ObjectId,
+      ref: "location",
+    },
   },
   {
     timestamps: true,
@@ -19,15 +60,5 @@ const locationSchema = new Schema<ILocation>(
   }
 );
 
-locationSchema.pre("save", async function (next) {
-  const isExist = await Location.findOne({
-    name: this.name,
-  });
-  if (isExist) {
-    throw new AppError("Already exist !", httpStatus.CONFLICT);
-  }
-  next();
-});
-
 // modal should define at last
-export const Location = model<ILocation>("location", locationSchema);
+export const Cars = model<ICar>("cars", carsSchema);

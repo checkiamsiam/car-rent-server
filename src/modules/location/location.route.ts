@@ -7,14 +7,36 @@ import locationValidation from "./location.validation";
 
 const locationRoutes: Router = express.Router();
 
-locationRoutes.post("/create", validateRequest(locationValidation.createReq), authorization(), locationController.createLocation);
+locationRoutes.post(
+  "/create",
+  validateRequest(locationValidation.createReq),
+  authorization(),
+  locationController.createLocation
+);
 
-locationRoutes.get("/", queryFeatures("multiple"), locationController.getLocations);
+locationRoutes.get(
+  "/",
+  queryFeatures("multiple"),
+  locationController.getLocations
+);
 
-locationRoutes.get("/:id", queryFeatures("single"), locationController.getSigleLocation);
+locationRoutes.get(
+  "/:id",
+  queryFeatures("single"),
+  locationController.getSigleLocation
+);
 
-locationRoutes.put("/update/:id", validateRequest(locationValidation.updateReq), authorization(), locationController.updateLocation);
+locationRoutes.patch(
+  "/update/:id",
+  validateRequest(locationValidation.updateReq),
+  authorization(),
+  locationController.updateLocation
+);
 
-locationRoutes.delete("/delete/:id", authorization(), locationController.deleteLocation);
+locationRoutes.delete(
+  "/delete/:id",
+  authorization(),
+  locationController.deleteLocation
+);
 
 export default locationRoutes;

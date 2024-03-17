@@ -4,11 +4,6 @@ import { IUser, UserModel } from "./user.interface";
 
 export const userSchema = new Schema<IUser, UserModel>(
   {
-    id: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     email: {
       type: String,
       required: true,
@@ -27,11 +22,15 @@ export const userSchema = new Schema<IUser, UserModel>(
   }
 );
 
-userSchema.statics.isUserExist = async function (email: string): Promise<IUser | null> {
+userSchema.statics.isUserExist = async function (
+  email: string
+): Promise<IUser | null> {
   return await User.findOne({ email }, { id: 1, password: 1, email: 1 });
 };
 
-userSchema.methods.comparePassword = async function (candidatePassword: string) {
+userSchema.methods.comparePassword = async function (
+  candidatePassword: string
+) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 

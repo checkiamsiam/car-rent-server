@@ -25,6 +25,39 @@ const makeQueryFeatureStages = (
     };
   });
 
+  const populateStage: PipelineStage[] = [];
+
+  if (queryFeatures.populate) {
+    const populatedArray = queryFeatures.populate.split(" ");
+
+    populatedArray.forEach((el) => {
+      const is = el.includes("-");
+
+      if (!is) {
+        const stage: PipelineStage = {
+          $lookup: {
+            from: el,
+            localField: el,
+            foreignField: "_id",
+            as: el,
+          },
+        };
+        populateStage.push(stage);
+      } else {
+        const [localField, from] = el.split("-");
+        const stage: PipelineStage = {
+          $lookup: {
+            from,
+            localField,
+            foreignField: "_id",
+            as: localField,
+          },
+        };
+        populateStage.push(stage);
+      }
+    });
+  }
+
   const pipeline: PipelineStage[] = [
     {
       $match: {
@@ -40,6 +73,7 @@ const makeQueryFeatureStages = (
       $sort: queryFeatures.sort,
     },
     fieldsSelectionStage,
+    ...populateStage,
     {
       $facet: {
         data: [{ $skip: queryFeatures.skip }, { $limit: queryFeatures.limit }],

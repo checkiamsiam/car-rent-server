@@ -8,6 +8,11 @@ interface IConfig {
     expiresIn: string;
     refreshExpiresIn: string;
   };
+  cloudinary: {
+    cloudName: string;
+    apiKey: string;
+    apiSecret: string;
+  };
 }
 
 export default IConfig;
