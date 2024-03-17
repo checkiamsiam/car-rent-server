@@ -16,7 +16,11 @@ const handelCastErrorDB: THandleErrorFunc = (err) => {
 // handel duplicate error
 const handelDuplicateErrorDB: THandleErrorFunc = (err) => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-  const message = `Duplicate field value: ${value.trim()}. Please use another value!`.replace(/['"]+/g, "");
+  const message =
+    `Duplicate field value: ${value.trim()}. Please use another value!`.replace(
+      /['"]+/g,
+      ""
+    );
   return new AppError(message, httpStatus.BAD_REQUEST);
 };
 
@@ -82,11 +86,17 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   }
 
   if (err.name === "JsonWebTokenError") {
-    err = new AppError("Invalid token. Please log in again!", httpStatus.UNAUTHORIZED);
+    err = new AppError(
+      "Invalid token. Please log in again!",
+      httpStatus.UNAUTHORIZED
+    );
   }
 
   if (err.name === "TokenExpiredError") {
-    err = new AppError("Token expired. Please log in again!", httpStatus.UNAUTHORIZED);
+    err = new AppError(
+      "Token expired. Please log in again!",
+      httpStatus.UNAUTHORIZED
+    );
   }
 
   if (config.isDevelopment) {
