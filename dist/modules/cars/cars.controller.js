@@ -17,7 +17,6 @@ const catchAsyncError_util_1 = __importDefault(require("../../utils/catchAsyncEr
 const customError_util_1 = __importDefault(require("../../utils/customError.util"));
 const sendResponse_util_1 = __importDefault(require("../../utils/sendResponse.util"));
 const cars_service_1 = __importDefault(require("./cars.service"));
-const cars_validation_1 = __importDefault(require("./cars.validation"));
 const createCars = (0, catchAsyncError_util_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const file = req.file;
     const body = JSON.parse(req.body.payload);
@@ -27,7 +26,6 @@ const createCars = (0, catchAsyncError_util_1.default)((req, res) => __awaiter(v
     else {
         body.imageUrl = file.path;
     }
-    yield cars_validation_1.default.createReq.parseAsync(body);
     const result = yield cars_service_1.default.create(body);
     (0, sendResponse_util_1.default)(res, {
         statusCode: http_status_1.default.OK,

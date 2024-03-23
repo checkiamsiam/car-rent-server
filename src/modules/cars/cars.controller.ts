@@ -5,7 +5,6 @@ import AppError from "../../utils/customError.util";
 import sendResponse from "../../utils/sendResponse.util";
 import { ICar } from "./cars.interface";
 import carsService from "./cars.service";
-import carsValidation from "./cars.validation";
 
 const createCars: RequestHandler = catchAsyncErrors(
   async (req: Request, res: Response) => {
@@ -19,7 +18,6 @@ const createCars: RequestHandler = catchAsyncErrors(
     } else {
       body.imageUrl = file.path;
     }
-    await carsValidation.createReq.parseAsync(body);
 
     const result = await carsService.create(body);
     sendResponse<ICar>(res, {
