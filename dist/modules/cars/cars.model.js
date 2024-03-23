@@ -36,11 +36,11 @@ exports.carsSchema = new mongoose_1.Schema({
     },
     ac: {
         type: Boolean,
-        required: true,
+        default: false,
     },
     automatic: {
         type: Boolean,
-        required: true,
+        default: false,
     },
     fuel: {
         type: String,
