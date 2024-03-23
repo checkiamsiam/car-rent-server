@@ -36,11 +36,11 @@ export const carsSchema = new Schema<ICar>(
     },
     ac: {
       type: Boolean,
-      required: true,
+      default: false,
     },
     automatic: {
       type: Boolean,
-      required: true,
+      default: false,
     },
     fuel: {
       type: String,
