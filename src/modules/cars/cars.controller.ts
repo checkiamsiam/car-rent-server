@@ -67,7 +67,9 @@ const updateCars: RequestHandler = catchAsyncErrors(
     const id: string = req.params.id;
 
     const file = req.file;
-    const updatePayload: Partial<ICar> = JSON.parse(req.body.payload);
+    const updatePayload: Partial<ICar> = req.body.payload
+      ? JSON.parse(req.body.payload)
+      : {};
     if (file) {
       updatePayload.imageUrl = file.path;
     }
