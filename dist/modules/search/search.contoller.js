@@ -17,7 +17,8 @@ const catchAsyncError_util_1 = __importDefault(require("../../utils/catchAsyncEr
 const sendResponse_util_1 = __importDefault(require("../../utils/sendResponse.util"));
 const search_service_1 = __importDefault(require("./search.service"));
 const searchCarByLocation = (0, catchAsyncError_util_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getResult = yield search_service_1.default.searchCarByLocation(req.queryFeatures);
+    const id = req.params.id;
+    const getResult = yield search_service_1.default.searchCarByLocation(id, req.queryFeatures);
     (0, sendResponse_util_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

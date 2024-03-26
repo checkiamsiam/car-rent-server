@@ -7,5 +7,5 @@ const express_1 = __importDefault(require("express"));
 const queryFeatures_middleware_1 = __importDefault(require("../../middleware/queryFeatures.middleware"));
 const search_contoller_1 = __importDefault(require("./search.contoller"));
 const searchRoutes = express_1.default.Router();
-searchRoutes.get("/", (0, queryFeatures_middleware_1.default)("multiple"), search_contoller_1.default.searchCarByLocation);
+searchRoutes.get("/:id", (0, queryFeatures_middleware_1.default)("multiple"), search_contoller_1.default.searchCarByLocation);
 exports.default = searchRoutes;

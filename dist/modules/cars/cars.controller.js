@@ -62,7 +62,9 @@ const getSigleCars = (0, catchAsyncError_util_1.default)((req, res) => __awaiter
 const updateCars = (0, catchAsyncError_util_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     const file = req.file;
-    const updatePayload = req.body.payload ? JSON.parse(req.body.payload) : {};
+    const updatePayload = req.body.payload
+        ? JSON.parse(req.body.payload)
+        : {};
     if (file) {
         updatePayload.imageUrl = file.path;
     }

@@ -13,42 +13,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const location_model_1 = require("../location/location.model");
-const searchCarByLocation = (queryFeatures) => __awaiter(void 0, void 0, void 0, function* () {
-    const isValidObjectId = mongoose_1.default.Types.ObjectId.isValid(queryFeatures.searchKey);
-    const matchStage = isValidObjectId
-        ? { _id: new mongoose_1.default.Types.ObjectId(queryFeatures.searchKey) } // Match by ObjectI
-        : { name: { $regex: queryFeatures.searchKey, $options: "i" } };
+const cars_model_1 = require("../cars/cars.model");
+const searchCarByLocation = (id, queryFeatures) => __awaiter(void 0, void 0, void 0, function* () {
+    const fieldsSelectionStage = Object.keys(queryFeatures.fields).length > 0
+        ? { $project: queryFeatures.fields }
+        : {
+            $addFields: {},
+        };
+    const populateStage = [];
+    if (queryFeatures.populate) {
+        const populatedArray = queryFeatures.populate.split(" ");
+        populatedArray.forEach((el) => {
+            const is = el.includes("-");
+            if (!is) {
+                const stage = {
+                    $lookup: {
+                        from: el,
+                        localField: el,
+                        foreignField: "_id",
+                        as: el,
+                    },
+                };
+                populateStage.push(stage);
+            }
+            else {
+                const [localField, from] = el.split("-");
+                const stage = {
+                    $lookup: {
+                        from,
+                        localField,
+                        foreignField: "_id",
+                        as: localField,
+                    },
+                };
+                populateStage.push(stage);
+            }
+        });
+    }
     const pipeline = [
-        {
-            $match: matchStage,
-        },
-        {
-            $sort: queryFeatures.sort,
-        },
-        {
-            $unwind: "$cars",
-        },
-        {
-            $lookup: {
-                from: "cars",
-                localField: "cars",
-                foreignField: "_id",
-                as: "cars",
-            },
-        },
-        {
-            $unwind: "$cars", // Unwind the cars array
-        },
-        {
-            $project: {
-                _id: 0, // Exclude the _id field
-                cars: 1, // Include only the cars array
-            },
-        },
-        {
-            $replaceRoot: { newRoot: "$cars" }, // Replace the root with the cars objects
-        },
         {
             $lookup: {
                 from: "locations",
@@ -61,10 +63,20 @@ const searchCarByLocation = (queryFeatures) => __awaiter(void 0, void 0, void 0,
             $unwind: "$location",
         },
         {
-            $addFields: {
-                location: "$location.name",
+            $match: {
+                $and: [
+                    {
+                        "location._id": new mongoose_1.default.Types.ObjectId(id),
+                    },
+                    queryFeatures.filters,
+                ],
             },
         },
+        {
+            $sort: queryFeatures.sort,
+        },
+        fieldsSelectionStage,
+        ...populateStage,
         {
             $facet: {
                 data: [{ $skip: queryFeatures.skip }, { $limit: queryFeatures.limit }],
@@ -78,7 +90,7 @@ const searchCarByLocation = (queryFeatures) => __awaiter(void 0, void 0, void 0,
             },
         },
     ];
-    const [result] = yield location_model_1.Location.aggregate(pipeline);
+    const [result] = yield cars_model_1.Cars.aggregate(pipeline);
     return result;
 });
 const searchService = { searchCarByLocation };
