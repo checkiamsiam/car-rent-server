@@ -22,6 +22,23 @@ export const carsSchema = new Schema<ICar>(
       type: Boolean,
       default: true,
     },
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+    category: {
+      type: String,
+      enum: [
+        "medium",
+        "premium",
+        "small",
+        "large",
+        "SUVs",
+        "People Carrier",
+        "Estate",
+      ],
+      required: true,
+    },
     seats: {
       type: Number,
       required: true,

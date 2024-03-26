@@ -3,6 +3,7 @@ import { ICar } from "../cars/cars.interface";
 
 export interface ILocation {
   name: string;
+  mapIframe: string;
   cars: ICar[] | ObjectId[];
 }
 

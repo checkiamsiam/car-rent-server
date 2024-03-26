@@ -4,7 +4,7 @@ import searchController from "./search.contoller";
 const searchRoutes = express.Router();
 
 searchRoutes.get(
-  "/",
+  "/:id",
   queryFeatures("multiple"),
   searchController.searchCarByLocation
 );

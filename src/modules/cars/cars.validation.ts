@@ -22,6 +22,32 @@ const createReq = z
       required_error: "Is available is must required",
       invalid_type_error: "Is available must be a boolean",
     }),
+    feature: z.boolean({
+      required_error: "Feature is must required",
+      invalid_type_error: "Feature must be a boolean",
+    }),
+    category: z
+      .string({
+        required_error: "Category is must required",
+        invalid_type_error: "Category must be a string",
+      })
+      .refine(
+        (data) => {
+          return [
+            "medium",
+            "premium",
+            "small",
+            "large",
+            "SUVs",
+            "People Carrier",
+            "Estate",
+          ].includes(data);
+        },
+        {
+          message:
+            "Category must be a medium, premium, small, large, SUVs, People Carrier or Estate",
+        }
+      ),
     seats: z.number({
       required_error: "Seats is must required",
       invalid_type_error: "Seats must be a number",
@@ -85,6 +111,33 @@ const updateReq = z.object({
     .boolean({
       invalid_type_error: "Is available must be a boolean",
     })
+    .optional(),
+  feature: z
+    .boolean({
+      invalid_type_error: "Feature must be a boolean",
+    })
+    .optional(),
+  category: z
+    .string({
+      invalid_type_error: "Category must be a string",
+    })
+    .refine(
+      (data) => {
+        return [
+          "medium",
+          "premium",
+          "small",
+          "large",
+          "SUVs",
+          "People Carrier",
+          "Estate",
+        ].includes(data);
+      },
+      {
+        message:
+          "Category must be a medium, premium, small, large, SUVs, People Carrier or Estate",
+      }
+    )
     .optional(),
   seats: z
     .number({

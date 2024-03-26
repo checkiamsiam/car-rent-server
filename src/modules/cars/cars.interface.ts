@@ -7,6 +7,15 @@ export interface ICar {
   rentPerDay: number;
   imageUrl: string;
   isAvailable: boolean;
+  featured: boolean;
+  category:
+    | "medium"
+    | "premium"
+    | "small"
+    | "large"
+    | "SUVs"
+    | "People Carrier"
+    | "Estate";
   seats: number;
   bags: number;
   dors: number;

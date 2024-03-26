@@ -6,7 +6,9 @@ import searchService from "./search.service";
 
 const searchCarByLocation: RequestHandler = catchAsyncErrors(
   async (req: Request, res: Response) => {
+    const id: string = req.params.id;
     const getResult = await searchService.searchCarByLocation(
+      id,
       req.queryFeatures
     );
     sendResponse<Partial<any>[]>(res, {

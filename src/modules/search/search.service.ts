@@ -3,49 +3,54 @@ import {
   IQueryFeatures,
   IQueryResult,
 } from "../../interfaces/queryFeatures.interface";
-import { Location } from "../location/location.model";
+import { Cars } from "../cars/cars.model";
 
 const searchCarByLocation = async (
+  id: string,
+
   queryFeatures: IQueryFeatures
 ): Promise<IQueryResult<any>> => {
-  const isValidObjectId = mongoose.Types.ObjectId.isValid(
-    queryFeatures.searchKey
-  );
+  const fieldsSelectionStage: PipelineStage =
+    Object.keys(queryFeatures.fields).length > 0
+      ? { $project: queryFeatures.fields }
+      : {
+          $addFields: {},
+        };
 
-  const matchStage = isValidObjectId
-    ? { _id: new mongoose.Types.ObjectId(queryFeatures.searchKey) } // Match by ObjectI
-    : { name: { $regex: queryFeatures.searchKey, $options: "i" } };
+  const populateStage: PipelineStage[] = [];
+
+  if (queryFeatures.populate) {
+    const populatedArray = queryFeatures.populate.split(" ");
+
+    populatedArray.forEach((el) => {
+      const is = el.includes("-");
+
+      if (!is) {
+        const stage: PipelineStage = {
+          $lookup: {
+            from: el,
+            localField: el,
+            foreignField: "_id",
+            as: el,
+          },
+        };
+        populateStage.push(stage);
+      } else {
+        const [localField, from] = el.split("-");
+        const stage: PipelineStage = {
+          $lookup: {
+            from,
+            localField,
+            foreignField: "_id",
+            as: localField,
+          },
+        };
+        populateStage.push(stage);
+      }
+    });
+  }
 
   const pipeline: PipelineStage[] = [
-    {
-      $match: matchStage,
-    },
-    {
-      $sort: queryFeatures.sort,
-    },
-    {
-      $unwind: "$cars",
-    },
-    {
-      $lookup: {
-        from: "cars",
-        localField: "cars",
-        foreignField: "_id",
-        as: "cars",
-      },
-    },
-    {
-      $unwind: "$cars", // Unwind the cars array
-    },
-    {
-      $project: {
-        _id: 0, // Exclude the _id field
-        cars: 1, // Include only the cars array
-      },
-    },
-    {
-      $replaceRoot: { newRoot: "$cars" }, // Replace the root with the cars objects
-    },
     {
       $lookup: {
         from: "locations",
@@ -58,10 +63,20 @@ const searchCarByLocation = async (
       $unwind: "$location",
     },
     {
-      $addFields: {
-        location: "$location.name",
+      $match: {
+        $and: [
+          {
+            "location._id": new mongoose.Types.ObjectId(id),
+          },
+          queryFeatures.filters,
+        ],
       },
     },
+    {
+      $sort: queryFeatures.sort,
+    },
+    fieldsSelectionStage,
+    ...populateStage,
     {
       $facet: {
         data: [{ $skip: queryFeatures.skip }, { $limit: queryFeatures.limit }],
@@ -76,9 +91,9 @@ const searchCarByLocation = async (
     },
   ];
 
-  const [result]: IQueryResult<any>[] = await Location.aggregate<
-    IQueryResult<any>
-  >(pipeline);
+  const [result]: IQueryResult<any>[] = await Cars.aggregate<IQueryResult<any>>(
+    pipeline
+  );
 
   return result;
 };
