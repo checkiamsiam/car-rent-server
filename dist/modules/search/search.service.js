@@ -50,6 +50,13 @@ const searchCarByLocation = (id, queryFeatures) => __awaiter(void 0, void 0, voi
             }
         });
     }
+    const pagination = [];
+    if (queryFeatures.limit) {
+        pagination.push({ $limit: queryFeatures.limit });
+    }
+    if (queryFeatures.skip) {
+        pagination.push({ $skip: queryFeatures.skip });
+    }
     const pipeline = [
         {
             $lookup: {
@@ -79,7 +86,7 @@ const searchCarByLocation = (id, queryFeatures) => __awaiter(void 0, void 0, voi
         ...populateStage,
         {
             $facet: {
-                data: [{ $skip: queryFeatures.skip }, { $limit: queryFeatures.limit }],
+                data: pagination,
                 total: [{ $count: "total" }],
             },
         },

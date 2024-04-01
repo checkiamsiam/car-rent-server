@@ -40,8 +40,9 @@ const queryFeatures = (
     } else {
       // set limit and skip to the request
       const page: number = parseInt(req.query.page as string) || 1;
-      const limit: number = parseInt(req.query.limit as string) || 10;
-      const skip: number = (page - 1) * limit;
+      const limit: number | undefined =
+        parseInt(req.query.limit as string) || undefined;
+      const skip: number | undefined = limit ? (page - 1) * limit : undefined;
       const searchKey: string = req.query.searchKey
         ? String(req.query.searchKey)
         : "";

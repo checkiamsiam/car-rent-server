@@ -50,6 +50,14 @@ const searchCarByLocation = async (
     });
   }
 
+  const pagination = [];
+  if (queryFeatures.limit) {
+    pagination.push({ $limit: queryFeatures.limit });
+  }
+  if (queryFeatures.skip) {
+    pagination.push({ $skip: queryFeatures.skip });
+  }
+
   const pipeline: PipelineStage[] = [
     {
       $lookup: {
@@ -79,7 +87,7 @@ const searchCarByLocation = async (
     ...populateStage,
     {
       $facet: {
-        data: [{ $skip: queryFeatures.skip }, { $limit: queryFeatures.limit }],
+        data: pagination,
         total: [{ $count: "total" }],
       },
     },

@@ -44,6 +44,13 @@ const makeQueryFeatureStages = (queryFeatures, options) => {
             }
         });
     }
+    const pagination = [];
+    if (queryFeatures.limit) {
+        pagination.push({ $limit: queryFeatures.limit });
+    }
+    if (queryFeatures.skip) {
+        pagination.push({ $skip: queryFeatures.skip });
+    }
     const pipeline = [
         {
             $match: {
@@ -62,7 +69,7 @@ const makeQueryFeatureStages = (queryFeatures, options) => {
         ...populateStage,
         {
             $facet: {
-                data: [{ $skip: queryFeatures.skip }, { $limit: queryFeatures.limit }],
+                data: pagination,
                 total: [{ $count: "total" }],
             },
         },
